@@ -4,18 +4,19 @@
 #include <fcntl.h>
 
 int main(){
-int fd;
-
-fd = open("madagascar", O_WRONLY | O_TRUNC);
-
-if (fd == -1){
-printf("Error opening file\n");
-}else{
-//printf(fd);
-printf("File opened\n");
-
-}
 
 
-return 0;
+	int fd;
+
+	fd = open("madagascar", O_WRONLY | O_TRUNC);
+
+	if (fd == -1){
+		printf("Error opening file\n");
+	}
+	else{
+		printf("File opened\n");
+	}
+
+
+	return 0;
 }
