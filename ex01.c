@@ -1,22 +1,61 @@
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
 
-int main(){
+int print_help()
+{
+  printf("Usage: ctryout <source> <destination>\n");
+  return -1;
+}
 
+int main(int argc, char **args)
+{
+  const int BUFFER_SIZE = 1024 * 1024 * 5;
+  char buffer[BUFFER_SIZE];
+  int file_source, file_dest, bytes_read;
 
-	int fd;
+  if (argc < 3)
+    return print_help();
 
-	fd = open("madagascar", O_WRONLY | O_TRUNC);
+  file_source = open(args[1], O_RDONLY);
 
-	if (fd == -1){
-		printf("Error opening file\n");
-	}
-	else{
-		printf("File opened\n");
-	}
+  if (file_source == -1)
+  {
+    perror("open");
+    return -1;
+  }
 
+  file_dest = open(args[2], O_CREAT | O_WRONLY, 0644);
 
-	return 0;
+  if (file_dest == -1)
+  {
+    close(file_source);
+    perror("open");
+    return -1;
+  }
+
+  while ((bytes_read = read(file_source, buffer, BUFFER_SIZE)) != 0)
+  {
+    if (bytes_read == -1)
+    {
+      if (errno == EINTR)
+        continue;
+
+      perror("read");
+      break;
+    }
+
+    if (write(file_dest, buffer, bytes_read) == -1)
+    {
+      perror("write");
+      break;
+    }
+  }
+
+  close(file_source);
+  close(file_dest);
+  return 0;
 }
