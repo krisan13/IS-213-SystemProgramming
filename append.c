@@ -67,6 +67,8 @@ int main(int argc, char **argv)
     usleep(10 * 1000);
   }
 
+  free(pid);
+  free(buffer);
   close(fd);
   return 0;
 }
