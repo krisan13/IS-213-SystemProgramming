@@ -59,7 +59,7 @@ int main(int argc, char **argv)
   signal(SIGINT, interrupt);
   while (keepRunning)
   {
-    if (write(fd, buffer, strlen(buffer)) == -1)
+    if (write(fd, buffer, sizeof(buffer)) == -1)
     {
       perror("write");
       break;
