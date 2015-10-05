@@ -6,8 +6,27 @@
 #include <errno.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <math.h>
 
 static volatile bool keepRunning = true;
+
+char* intToString(int i)
+{
+  int digits = 1;
+  int mod = 10;
+  char *result;
+
+  while (floor(i % mod) < i)
+  {
+    digits++;
+    mod *= 10;
+  }
+
+  result = malloc(digits);
+  sprintf(result, "%d", i);
+  return result;
+}
 
 static void interrupt(int signo)
 {
@@ -18,6 +37,8 @@ static void interrupt(int signo)
 int main(int argc, char **argv)
 {
   int fd;
+  char *pid = intToString(getpid());
+  char *buffer;
 
   if (argc < 3)
   {
@@ -33,10 +54,12 @@ int main(int argc, char **argv)
     return -1;
   }
 
+  buffer = malloc(sizeof(*pid) + sizeof(*argv[2]) + 4);
+  sprintf(buffer, "%s (%s) ", argv[2], pid);
   signal(SIGINT, interrupt);
   while (keepRunning)
   {
-    if (write(fd, argv[2], sizeof(*argv[2])) == -1)
+    if (write(fd, buffer, strlen(buffer)) == -1)
     {
       perror("write");
       break;
