@@ -11,6 +11,7 @@ int print_help()
   return -1;
 }
 
+//This is the main method
 int main(int argc, char **args)
 {
   const int BUFFER_SIZE = 1024 * 1024 * 5;
