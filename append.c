@@ -36,7 +36,7 @@ int main(int argc, char **argv)
   signal(SIGINT, interrupt);
   while (keepRunning)
   {
-    if (write(fd, argv[2], sizeof(argv[2])) == -1)
+    if (write(fd, argv[2], sizeof(*argv[2])) == -1)
     {
       perror("write");
       break;
