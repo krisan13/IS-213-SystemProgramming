@@ -41,7 +41,7 @@ int main(int argc, char **argv)
       perror("write");
       break;
     }
-    sleep(1);
+    usleep(10 * 1000);
   }
 
   close(fd);
