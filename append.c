@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -37,7 +38,7 @@ static void interrupt(int signo)
 
 int main(int argc, char **argv)
 {
-  int fd;
+  int fd, buffer_length;
   char *pid = intToString(getpid());
   char *buffer;
 
@@ -55,12 +56,13 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  buffer = malloc(sizeof(*pid) + sizeof(*argv[2]) + 5);
+  buffer_length = sizeof(*pid) + sizeof(*argv[2]) + 5;
+  buffer = malloc(buffer_length);
   sprintf(buffer, "%s (%s) \n", argv[2], pid);
   signal(SIGINT, interrupt);
   while (keepRunning)
   {
-    if (write(fd, buffer, strlen(buffer)) == -1)
+    if (write(fd, buffer, buffer_length) == -1)
     {
       perror("write");
       break;
