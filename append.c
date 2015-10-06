@@ -55,8 +55,8 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  buffer = malloc(sizeof(*pid) + sizeof(*argv[2]) + 4);
-  sprintf(buffer, "%s (%s) ", argv[2], pid);
+  buffer = malloc(sizeof(*pid) + sizeof(*argv[2]) + 5);
+  sprintf(buffer, "%s (%s) \n", argv[2], pid);
   signal(SIGINT, interrupt);
   while (keepRunning)
   {
