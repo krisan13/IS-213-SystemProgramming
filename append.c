@@ -41,6 +41,7 @@ int main(int argc, char **argv)
   int fd, buffer_length;
   char *pid = intToString(getpid());
   char *buffer;
+  struct timeval time;
 
   if (argc < 3)
   {
@@ -56,12 +57,13 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  buffer_length = sizeof(*pid) + sizeof(*argv[2]) + 5;
+  buffer_length = strlen((const char*)pid) + strlen((const char*)argv[2]) + 23; // 8 for chars, 15 for timestamp
   buffer = malloc(buffer_length);
-  sprintf(buffer, "%s (%s) \n", argv[2], pid);
   signal(SIGINT, interrupt);
   while (keepRunning)
   {
+    gettimeofday(&time, NULL);
+    sprintf(buffer, "%lu - %s (%s) \n", time.tv_sec * 1000 + time.tv_usec / 1000, argv[2], pid);
     if (write(fd, buffer, buffer_length) == -1)
     {
       perror("write");
